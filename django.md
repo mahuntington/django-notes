@@ -1,3 +1,7 @@
+# Intro to Django
+
+## Setup
+
 ```
 python3 -m venv tutorial-env
 source tutorial-env/bin/activate
@@ -21,6 +25,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 ````
+
+## Create a model
 
 add to contacts_api/models.py
 
@@ -77,31 +83,7 @@ python manage.py runserver
 
 go to http://localhost:8000/admin/
 
-in django_rest_api/urls.py edit
-
-```python
-from django.contrib import admin
-from django.urls import path
-from django.conf.urls import include # add this
-
-urlpatterns = [
-    path('', include('contacts_api.urls')), # add this
-    path('admin/', admin.site.urls),
-]
-```
-
-create contacts_api/urls.py and add
-
-```python
-from django.urls import path
-from . import views
-from rest_framework.routers import DefaultRouter 
-
-urlpatterns = [
-    path('api/contacts', views.ContactList.as_view(), name='contact_list'),
-    path('api/contacts/<int:pk>', views.ContactDetail.as_view(), name='contact_detail'),
-]
-```
+## Create api endpoints
 
 install djangorestframework:
 
@@ -136,6 +118,32 @@ class ContactSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('id', 'name', 'age',)
 ```
 
+in django_rest_api/urls.py edit
+
+```python
+from django.contrib import admin
+from django.urls import path
+from django.conf.urls import include # add this
+
+urlpatterns = [
+    path('', include('contacts_api.urls')), # add this
+    path('admin/', admin.site.urls),
+]
+```
+
+create contacts_api/urls.py and add
+
+```python
+from django.urls import path
+from . import views
+from rest_framework.routers import DefaultRouter 
+
+urlpatterns = [
+    path('api/contacts', views.ContactList.as_view(), name='contact_list'),
+    path('api/contacts/<int:pk>', views.ContactDetail.as_view(), name='contact_detail'),
+]
+```
+
 set contacts_api/views.py to
 
 ```python
@@ -151,3 +159,7 @@ class ContactDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Contact.objects.all()
     serializer_class = ContactSerializer
 ```
+
+## Add CORS
+## Switch to Postgres
+## Deploy to Heroku
