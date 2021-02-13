@@ -3,8 +3,8 @@
 ## Setup
 
 ```
-python3 -m venv tutorial-env
-source tutorial-env/bin/activate
+python3 -m venv ~/ga-env
+source ~/ga-env/bin/activate
 python -m pip install Django
 django-admin startproject django_rest_api
 cd django_rest_api
