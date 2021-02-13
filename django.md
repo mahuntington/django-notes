@@ -75,4 +75,79 @@ in terminal
 python manage.py runserver
 ```
 
-go to http://127.0.0.1:8000/admin/
+go to http://localhost:8000/admin/
+
+in django_rest_api/urls.py edit
+
+```python
+from django.contrib import admin
+from django.urls import path
+from django.conf.url import include # add this
+
+urlpatterns = [
+    path('', include('contacts_api.url')), # add this
+    path('admin/', admin.site.urls),
+]
+```
+
+create contacts_api/urls.py and add
+
+```python
+from django.urls import path
+from . import views
+from rest_framework.routers import DefaultRouter 
+
+urlpatterns = [
+    path('api/contacts', views.ContactList.as_view(), name='contact_list'),
+    path('api/contacts/<int:pk>', views.ContactDetail.as_view(), name='contact_detail'),
+]
+```
+
+install djangorestframework:
+
+```
+python -m pip install djangorestframework
+```
+
+edit django_rest_api/settings.py
+
+```python
+INSTALLED_APPS = [
+    'rest_framework',  # add this
+    'contacts_api',
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+]
+```
+
+create contacts_api/serializers.py
+
+```python
+from rest_framework import serializers 
+from .models import Contact 
+
+class ContactSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Contact
+        fields = ('id', 'contact_url', 'name', 'age',)
+```
+
+set contacts_api/views.py to
+
+```python
+from rest_framework import generics
+from .serializers import ContactSerializer
+from .models import Contact
+
+class ContactList(generics.ListCreateAPIView):
+    queryset = Contact.objects.all()
+    serializer_class = ContactSerializer
+
+class ContactDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Contact.objects.all()
+    serializer_class = ContactSerializer
+```
