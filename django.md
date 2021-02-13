@@ -11,6 +11,7 @@ cd django_rest_api
 python manage.py startapp contacts_api
 python manage.py migrate
 ```
+**NOTE** you'll have to run `source ~/ga-env/bin/activate` every time you start a new terminal
 
 edit django_rest_api/settings.py
 
