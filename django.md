@@ -133,7 +133,7 @@ from .models import Contact
 class ContactSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Contact
-        fields = ('id', 'contact_url', 'name', 'age',)
+        fields = ('id', 'name', 'age',)
 ```
 
 set contacts_api/views.py to
