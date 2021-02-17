@@ -225,5 +225,4 @@ MIDDLEWARE = [
 CORS_ALLOW_ALL_ORIGINS = True # add this
 ```
 
-## Switch to Postgres
 ## Deploy to Heroku
