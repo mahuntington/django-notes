@@ -2,26 +2,47 @@
 
 ## Setup
 
+Let's create a special development environment.  This will separate what we use for class from the rest of your system.  It also makes installing python packages easier
+
 ```
 python3 -m venv ~/ga-env
+```
+
+now that it's create it, let's start it up:
+
+```
 source ~/ga-env/bin/activate
 ```
-**NOTE:** you'll have to run `source ~/ga-env/bin/activate` every time you create a new terminal window
+**NOTE:** you'll have to run `source ~/ga-env/bin/activate` every time you create a new terminal window.  If you want, you can put this command in `~/.bash_profile` or `~/.zshenv` depending on whether you're using bash or zsh, respectively
+
+Now let's install Django.  This will allow us to create/run django apps:
 
 ```
 python -m pip install Django
+```
+
+Let's create a new django project.  Go to where on your computer you want your app to be stored and run:
+
+```
 django-admin startproject django_rest_api
+```
+
+This is kind of `npm init`.  Now, go run
+
+```
 cd django_rest_api
 python manage.py startapp contacts_api
 ```
 
-in psql
+This will move into your project dir and create an app called `contacts_api`.  A django project can contain many apps.  Each app is a logical section of your that is self contained.  It's a bit like a controller file in express which contains all routes for one specific model
+
+Now let's get Postgres hooked up to Django.  Start your postgres server, open Postgres, and choose any sub database.  Once in there, create a sub database that our project will use:
 
 ```
 CREATE DATABASE django_contacts;
 ```
 
-edit django_rest_api/settings.py
+Now edit django_rest_api/settings.py:
 
 ```python
 DATABASES = {
@@ -35,14 +56,23 @@ DATABASES = {
 }
 ```
 
-back in terminal
+back in terminal run
 
 ```
 python -m pip install psycopg2
+```
+
+This installs a driver that allows Django to talk to Postgres.  It's a bit like Mongoose.
+
+Now we want to run a migration to set up the tables necessary to get django working.  Migrations are python files that run SQL for you, so that you don't have to write it yourself
+
+```
 python manage.py migrate
 ```
 
-edit django_rest_api/settings.py
+Now that the db is set up, let's register our contacts_api with django.  This is a bit like in express when we require a controller file into server.js
+
+edit django_rest_api/settings.py:
 
 ```python
 INSTALLED_APPS = [
@@ -58,7 +88,9 @@ INSTALLED_APPS = [
 
 ## Create a model
 
-add to contacts_api/models.py
+Now let's create a model.  This is similar to migrations, in that it allows us to write python code that will handle the writing of SQL for us.
+
+add to contacts_api/models.py:
 
 ```python
 class Contact(models.Model):
@@ -66,11 +98,23 @@ class Contact(models.Model):
     age = models.IntegerField()
 ```
 
-terminal
+Now let's set up a migration that will access our new `Contact` model and generate the necessary table in Postgres.  In the terminal, run:
 
 ```
 python manage.py makemigrations contacts_api
+```
+
+This creates the migration, but doesn't execute it.  If we want, we can see what sql will be run:
+
+```
 python manage.py sqlmigrate contacts_api 0001
+```
+
+Note, if you create more migrations later on, you'll have to update `0001` to the number of the migration file that was created (check in `contacts_api/migrations/` for the appropriate `.py` file)
+
+Now let's have django run any outstanding migrations that haven't been run yet:
+
+```
 python manage.py migrate
 ```
 
