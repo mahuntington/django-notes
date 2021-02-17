@@ -299,6 +299,14 @@ CORS_ALLOW_ALL_ORIGINS = True # add this
 
     ![](https://imgur.com/AVlB8kK.png)
     
+1. At the top of `django_rest_api/settings.py` add `import dj_database_url`
+1. Further down `django_rest_api/settings.py` make the following change:
+
+```python
+db_from_env = dj_database_url.config(conn_max_age=600)
+DATABASES['default'].update(db_from_env)
+```
+    
 ### On the Browser 
 
 1. Go to your heroku dashboard for the heroku project you just created
