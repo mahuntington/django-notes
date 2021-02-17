@@ -287,25 +287,71 @@ CORS_ALLOW_ALL_ORIGINS = True # add this
 
 ## Deploy to Heroku
 
-### In Terminal
+### Locally
 
-1. Create a heroku app from the root of your project folder, run: `heroku create` 
+Create a heroku app from the root of your project folder, run: `heroku create` in the terminal.  The command will randomly generate a name for you, if you want to name your app something specific run: `heroku create urlNameYouWantHere`.
 
-    - The above command will randomly generate a name for you, if you want to name your app something specific run: `heroku create urlNameYouWantHere`
-
-1. Copy the heroku url that was created (without the `https://`), go to your `django_rest_api/settings.py` and add it into the `ALLOWED_HOSTS`
-
-    - e.g. 
-
-    ![](https://imgur.com/AVlB8kK.png)
-    
-1. At the top of `django_rest_api/settings.py` add `import dj_database_url`
-1. Further down `django_rest_api/settings.py` make the following change:
+Copy the heroku url that was created (without the `https://`), go to your `django_rest_api/settings.py` and add it into the `ALLOWED_HOSTS`
 
 ```python
-db_from_env = dj_database_url.config(conn_max_age=600)
-DATABASES['default'].update(db_from_env)
+ALLOWED_HOSTS = ['localhost', 'agile-earth-74098.herokuapp.com']
 ```
+    
+At the top of `django_rest_api/settings.py` add `import dj_database_url`:
+
+```python
+from pathlib import Path
+import dj_database_url # add this
+```
+
+Further down `django_rest_api/settings.py` make the following change:
+
+```python
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'django_contacts',
+        'USER': '',
+        'PASSWORD': '',
+        'HOST': 'localhost'
+    }
+}
+
+db_from_env = dj_database_url.config(conn_max_age=600) # add this
+DATABASES['default'].update(db_from_env) # add this
+```
+
+create `Procfile` and add
+
+```
+web: gunicorn django_rest_api.wsgi
+```
+
+create `Pipfile` and add
+
+```
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+django = "*"
+psycopg2-binary = "*"
+django-extensions = "*"
+djangorestframework = "*"
+dj-database-url = "*"
+python-dotenv = "*"
+gunicorn = "*"
+whitenoise = "*"
+django-cors-headers = "*"
+
+[requires]
+python_version = "3.9.1"
+```
+**Note:** on the last line, substitute your version of python (`python --version`)
     
 ### On the Browser 
 
