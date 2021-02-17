@@ -167,7 +167,7 @@ Install `djangorestframework`:
 python -m pip install djangorestframework
 ```
 
-edit django_rest_api/settings.py
+edit django_rest_api/settings.py to tell django to use djangorestframework
 
 ```python
 INSTALLED_APPS = [
