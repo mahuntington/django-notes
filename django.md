@@ -296,7 +296,13 @@ Copy the heroku url that was created (without the `https://`), go to your `djang
 ```python
 ALLOWED_HOSTS = ['localhost', 'agile-earth-74098.herokuapp.com']
 ```
-    
+
+Add `dj_database_url` so that production will get the database info from environment variables:
+
+```
+python -m pip install dj_database_url
+```
+
 At the top of `django_rest_api/settings.py` add `import dj_database_url`:
 
 ```python
@@ -327,7 +333,9 @@ create `Procfile` and add
 web: gunicorn django_rest_api.wsgi
 ```
 
-create `Pipfile` and add
+This will help heroku know how to build your app
+
+Create `Pipfile` and add
 
 ```
 [[source]]
@@ -352,6 +360,8 @@ django-cors-headers = "*"
 python_version = "3.9.1"
 ```
 **Note:** on the last line, substitute your version of python (`python --version`)
+    
+This will tell heroku what packages it needs
     
 ### On the Browser 
 
