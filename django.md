@@ -118,48 +118,50 @@ Now let's have django run any outstanding migrations that haven't been run yet:
 python manage.py migrate
 ```
 
-enter into shell
+Let's test that the migrations worked.  There's a django terminal shell that will let us play around with the project without having to use the browser.  Let's start it:
 
 ```
 python manage.py shell
 ```
 
-in shell
+Once it's started, we can write python to play around with the models.  In the shell run:
 
 ```python
 from contacts_api.models import Contact
-Contact.objects.all()
-c = Contact(name="Matt", age=40)
-c.save()
-c.id #should return 1
+Contact.objects.all() # get all the contacts in the db
+c = Contact(name="Matt", age=40) # create a new contact.  Note this isn't yet in the db
+c.save() # save the contact to the db
+c.id # check the id to make sure it's in the db
 Contact.objects.all()
 quit()
 ```
 
-in terminal and follow prompts
+Django has a really nice admin app that lets us interface with the database from the browser.  In the terminal run the following and follow the prompts
 
 ```
 python manage.py createsuperuser
 ```
 
-add to contacts_api/admin.py
+Now add the following to contacts_api/admin.py
 
 ```python
 from .models import Contact
 admin.site.register(Contact)
 ```
 
-in terminal
+and in the terminal run
 
 ```
 python manage.py runserver
 ```
 
-go to http://localhost:8000/admin/
+Go to http://localhost:8000/admin/ in the browser and sign in with the credentials you created when running `python manage.py createsuperuser`
 
 ## Create api endpoints
 
-install djangorestframework:
+Now let's start working on the public facing API.  We'll use Django Rest Framework, which makes this job a little easier.
+
+Install `djangorestframework`:
 
 ```
 python -m pip install djangorestframework
@@ -180,17 +182,58 @@ INSTALLED_APPS = [
 ]
 ```
 
-create contacts_api/serializers.py
+Now we want to create a serializer for our Contact model.  This will take the data in our database and convert it to JSON.
+
+Create contacts_api/serializers.py and add
 
 ```python
 from rest_framework import serializers 
 from .models import Contact 
 
-class ContactSerializer(serializers.HyperlinkedModelSerializer):
+class ContactSerializer(serializers.HyperlinkedModelSerializer): # serializers.HyperlinkedModelSerializer just tells django to convert sql to JSON
     class Meta:
-        model = Contact
-        fields = ('id', 'name', 'age',)
+        model = Contact # tell django which model to use
+        fields = ('id', 'name', 'age',) # tell django which fields to include
 ```
+
+Don't get thrown off by the nested class (`Meta`).  This is just an organizational thing that python lets us do.
+
+Now lets create views which will connect the `ContactSerializer` with the `Contact` model.
+
+- `generics.ListCreateAPIView` will be inherited by `ContactList` so that it will either display all Contacts in the DB or create a new one, depending on the request url and method
+- `generics.RetrieveUpdateDestroyAPIView` will be inherited by `ContactDetail` so that it will either update or delete a contact in the DB, depending on the request url and method
+
+set contacts_api/views.py to
+
+```python
+from rest_framework import generics
+from .serializers import ContactSerializer
+from .models import Contact
+
+class ContactList(generics.ListCreateAPIView):
+    queryset = Contact.objects.all() # tell django how to retrieve all objects from the DB
+    serializer_class = ContactSerializer # tell django what serializer to use
+
+class ContactDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Contact.objects.all()
+    serializer_class = ContactSerializer
+```
+
+Now lets map request urls to the views we just created
+
+create contacts_api/urls.py and add
+
+```python
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('api/contacts', views.ContactList.as_view(), name='contact_list'), # api/contacts will be routed to the ContactList view for handling
+    path('api/contacts/<int:pk>', views.ContactDetail.as_view(), name='contact_detail'), # api/contacts will be routed to the ContactDetail view for handling
+]
+```
+
+Finally register our contacts_api urls with django
 
 in django_rest_api/urls.py edit
 
@@ -205,42 +248,15 @@ urlpatterns = [
 ]
 ```
 
-create contacts_api/urls.py and add
-
-```python
-from django.urls import path
-from . import views
-from rest_framework.routers import DefaultRouter 
-
-urlpatterns = [
-    path('api/contacts', views.ContactList.as_view(), name='contact_list'),
-    path('api/contacts/<int:pk>', views.ContactDetail.as_view(), name='contact_detail'),
-]
-```
-
-set contacts_api/views.py to
-
-```python
-from rest_framework import generics
-from .serializers import ContactSerializer
-from .models import Contact
-
-class ContactList(generics.ListCreateAPIView):
-    queryset = Contact.objects.all()
-    serializer_class = ContactSerializer
-
-class ContactDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Contact.objects.all()
-    serializer_class = ContactSerializer
-```
-
 ## Add CORS
+
+Lastly, let's allow web apps on other origins to access this api.  In the terminal, install the `django-cors-headers` package:
 
 ```
 python -m pip install django-cors-headers
 ```
 
-edit django_rest_api/settings.py
+edit django_rest_api/settings.py to include the new package:
 
 ```python
 INSTALLED_APPS = [
@@ -256,7 +272,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware', # add this
+    'corsheaders.middleware.CorsMiddleware', # this makes the cors package run for all requests.  A bit like app.use() in express
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
