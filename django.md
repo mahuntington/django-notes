@@ -5,13 +5,42 @@
 ```
 python3 -m venv ~/ga-env
 source ~/ga-env/bin/activate
+```
+**NOTE:** you'll have to run `source ~/ga-env/bin/activate` every time you create a new terminal window
+
+```
 python -m pip install Django
 django-admin startproject django_rest_api
 cd django_rest_api
 python manage.py startapp contacts_api
+```
+
+in psql
+
+```
+CREATE DATABASE django_contacts;
+```
+
+edit django_rest_api/settings.py
+
+```python
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'django_contacts',
+        'USER': '',
+        'PASSWORD': '',
+        'HOST': 'localhost'
+    }
+}
+```
+
+back in terminal
+
+```
+python -m pip install psycopg2
 python manage.py migrate
 ```
-**NOTE:** you'll have to run `source ~/ga-env/bin/activate` every time you create a new terminal window
 
 edit django_rest_api/settings.py
 
