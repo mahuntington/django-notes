@@ -333,41 +333,40 @@ db_from_env = dj_database_url.config(conn_max_age=600) # add this
 DATABASES['default'].update(db_from_env) # add this
 ```
 
+We need to set up static files correctly for heroku.  Edit `django_rest_api/settings.py` at the top to import `os`:
+
+```python
+from pathlib import Path
+import dj_database_url
+import os # add this
+```
+
+and now edit the bottom of the same file:
+
+```python
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') # add this
+```
+
+Now install gunicorn which will serve your django code
+
+```
+python -m pip install gunicorn
+```
+
 create `Procfile` and add
 
 ```
 web: gunicorn django_rest_api.wsgi
 ```
 
-This will help heroku know how to build your app
-
-Create `Pipfile` and add
-
-```
-[[source]]
-name = "pypi"
-url = "https://pypi.org/simple"
-verify_ssl = true
-
-[dev-packages]
-
-[packages]
-django = "*"
-psycopg2-binary = "*"
-django-extensions = "*"
-djangorestframework = "*"
-dj-database-url = "*"
-python-dotenv = "*"
-gunicorn = "*"
-whitenoise = "*"
-django-cors-headers = "*"
-
-[requires]
-python_version = "3.9.1"
-```
-**Note:** on the last line, substitute your version of python (`python --version`)
+This will tell heroku how to serve your app
     
-This will tell heroku what packages it needs
+Now run the following to create a dependencies list for heroku:
+
+```
+python -m pip freeze > requirements.txt
+```
     
 ### On the Browser 
 
@@ -377,7 +376,6 @@ This will tell heroku what packages it needs
 
 ### In Terminal
 
-1. run `heroku config:set DISABLE_COLLECTSTATIC=1`
 1. `git add -A`
 1. `git commit -m "heroku deployment"`
 1. `git push heroku master` 
