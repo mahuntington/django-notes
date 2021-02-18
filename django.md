@@ -62,6 +62,12 @@ back in terminal run
 python -m pip install psycopg2
 ```
 
+if that gives errors, run
+
+```
+python -m pip install psycopg2-binary
+```
+
 This installs a driver that allows Django to talk to Postgres.  It's a bit like Mongoose.
 
 Now we want to run a migration to set up the tables necessary to get django working.  Migrations are python files that run SQL for you, so that you don't have to write it yourself
