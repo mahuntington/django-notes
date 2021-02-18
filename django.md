@@ -339,6 +339,8 @@ We need to set up static files correctly for heroku.  Edit `django_rest_api/sett
 from pathlib import Path
 import dj_database_url
 import os # add this
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) # edit this var
 ```
 
 and now edit the bottom of the same file:
@@ -346,6 +348,29 @@ and now edit the bottom of the same file:
 ```python
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') # add this
+```
+
+Install `whitenoise` to help with static files
+
+```
+python -m pip install whitenoise
+```
+
+Edit `django_rest_api/settings.py`
+
+```python
+MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware', # add this
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage' # add this
 ```
 
 Now install gunicorn which will serve your django code
