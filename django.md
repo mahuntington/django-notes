@@ -356,7 +356,7 @@ Install `whitenoise` to help with static files
 python -m pip install whitenoise
 ```
 
-Edit `django_rest_api/settings.py`
+Edit `django_rest_api/settings.py` to include `whitenoise`
 
 ```python
 MIDDLEWARE = [
