@@ -19,6 +19,10 @@
 1. Have a class inherit from another
 1. Create a factory for objects
 
+## Running files
+
+These notes are for python3, so use `python3 filename.py` to run your files
+
 ## Print a message
 
 You can print a message to the user
