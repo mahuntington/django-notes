@@ -227,7 +227,7 @@ class ContactDetail(generics.RetrieveUpdateDestroyAPIView):
 
 Now lets map request urls to the views we just created
 
-create contacts_api/urls.py and add
+create contacts_api/urls.py and add the following
 
 ```python
 from django.urls import path
@@ -238,6 +238,7 @@ urlpatterns = [
     path('api/contacts/<int:pk>', views.ContactDetail.as_view(), name='contact_detail'), # api/contacts will be routed to the ContactDetail view for handling
 ]
 ```
+**NOTE** this is not the same as django_rest_api/urls.py.  We have a separate file just for our contacts urls for code organization purposes.  This is a bit like our controller files in express.  We could put everything in django_rest_api/urls.py, but this allows us to keep different parts of the app separated from each other.  This makes it more modular, so that we could copy entire apps (along with their urls) to different projects
 
 Finally register our contacts_api urls with django
 
@@ -253,6 +254,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 ]
 ```
+**NOTE** this is a bit like when we included our controller routes into server.js in express
 
 ## Add CORS
 
