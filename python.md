@@ -120,6 +120,19 @@ print(a[1]) #5
 print(a[4]) #5.6
 ```
 
+## Store an object as a "dictionary"
+
+JS objects are called dictionaries in Python and use array access syntax:
+
+```python
+my_car = {
+  "brand": "Ford",
+  "model": "Mustang",
+  "year": 1964
+}
+print(my_car["brand"])
+```
+
 ## Perform a set of commands depending on a situation
 
 ```python
