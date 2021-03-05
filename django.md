@@ -104,6 +104,8 @@ class Contact(models.Model):
     age = models.IntegerField()
 ```
 
+You'll notice that `models.CharField` takes params like so: `max_length=32`. This is just a way to specify parameters to a function by name, as opposed to order
+
 Now let's set up a migration that will access our new `Contact` model and generate the necessary table in Postgres.  In the terminal, run:
 
 ```
