@@ -61,12 +61,6 @@ DATABASES = {
 back in terminal run
 
 ```
-python -m pip install psycopg2
-```
-
-if that gives errors, run
-
-```
 python -m pip install psycopg2-binary
 ```
 
