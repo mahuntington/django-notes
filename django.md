@@ -21,7 +21,7 @@ Now let's install Django.  This will allow us to create/run django apps:
 python -m pip install Django
 ```
 
-Let's create a new django project.  Go to where on your computer you want your app to be stored and run:
+Let's create a new django project.  Go to where on your computer you want your app to be stored and run (`django_rest_api` can be whatever we want the project to be called`):
 
 ```
 django-admin startproject django_rest_api
