@@ -27,7 +27,7 @@ Let's create a new django project.  Go to where on your computer you want your a
 django-admin startproject django_rest_api
 ```
 
-This is kind of `npm init`.  Now, go run
+This is kind of `npm init`.  Now, run
 
 ```
 cd django_rest_api
@@ -39,8 +39,10 @@ This will move into your project dir and create an app called `contacts_api`.  A
 Now let's get Postgres hooked up to Django.  Start your postgres server, open Postgres, and choose any sub database.  Once in there, create a sub database that our project will use:
 
 ```
-CREATE DATABASE django_contacts;
+CREATE DATABASE django_api;
 ```
+
+**NOTE:** the db name can be whatever you want, so long as `NAME` in the next step matches it
 
 Now edit django_rest_api/settings.py:
 
@@ -48,7 +50,7 @@ Now edit django_rest_api/settings.py:
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'django_contacts',
+        'NAME': 'django_api',
         'USER': '',
         'PASSWORD': '',
         'HOST': 'localhost'
